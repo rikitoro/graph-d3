@@ -19,7 +19,7 @@ function make_graph(dataset){
 			.enter()
 			.append("rect")
 			.attr({
-				x : function(d,i){ return i * 30; },
+				x : function(d,i){ console.log("x"); return i * 30; },
 				y : function(d){ return 300 - d; },
 				width : 15,
 				height: function(d){ return d;},

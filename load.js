@@ -8,7 +8,8 @@ $(document).ready(function(){
 		success:function(res){
 			content = $(res.responseText).text();
 			console.log("content:",content);
-			text2csv(content);
+			var dataset = text2csv(content);
+			make_graph(dataset);
 		}
 	});
 });
@@ -58,6 +59,37 @@ function text2csv(text){
 	}
 	// 確認
 	console.log("failinged data:",data);
+	// 各データを数値に変換
+	for(var i=0;i<data.length;i++){
+		data[i][3] = parseInt(data[i][3]);
+	}
+	// 確認
+	console.log("numbered data:",data);
 
 	return data;
+}
+
+function make_graph(dataset){
+	var w = 1000;
+	var h = 600;
+	var barPadding = 1; // 暴徒棒の間の間隔
+	
+	var svg = d3.select("body")
+			.append("svg")
+			.attr("height",h)
+			.attr("width",w);
+
+	console.log("svg:",svg);
+
+	svg.selectAll("rect")
+		.data(dataset)
+		.enter()
+		.append("rect")	
+		.attr( {
+			x : function(d,i){ return i * (w / dataset.length);   },
+			y : function(d){ return h - d[3]; -10 },
+			width : w / dataset.length - barPadding,
+			height : function(d){ return d[3];  },
+			fill : '#6fbadd'
+			} );
 }

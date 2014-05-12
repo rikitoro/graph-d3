@@ -71,9 +71,15 @@ function text2csv(text){
 
 function make_graph(dataset){
 	var w = 1000;
-	var h = 600;
+	var h = 400;
 	var barPadding = 1; // –\“k–_‚ÌŠÔ‚ÌŠÔŠu
-	
+
+	// scale
+	var yScale = d3.scale.linear()
+			.domain( [0, d3.max( dataset,function( d ){ return d[3]; } ) ] )
+			.range([0,h]);
+
+
 	var svg = d3.select("body")
 			.append("svg")
 			.attr("height",h)
@@ -87,9 +93,9 @@ function make_graph(dataset){
 		.append("rect")	
 		.attr( {
 			x : function(d,i){ return i * (w / dataset.length);   },
-			y : function(d){ return h - d[3] -15 },
+			y : function(d){ return h - yScale(d[3]) -15 },
 			width : w / dataset.length - barPadding,
-			height : function(d){ return d[3];  },
+			height : function(d){ return yScale(d[3]);  },
 			fill : function(d,i){ 	if(i % 10 == 0){
 							return '#9bbb59';
 						} else{
@@ -111,15 +117,6 @@ function make_graph(dataset){
 					} ,
 			fill : '#9bbb59'
 			} );
+	
 
-	svg.selectAll("text")
-		.data(dataset)
-		.enter()
-		.append("text")
-		.text(function(d,i){ if(i%10 == 0){return d[3];} })
-		.attr( {
-				x : function(d,i){return i * (w /dataset.length); },
-				y : function(d,i){return h;},
-				fill : '#9bbb59'
-			} );
 }

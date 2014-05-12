@@ -79,6 +79,11 @@ function make_graph(dataset){
 			.domain( [0, 500] )
 			.range([0,h]);
 
+	// axis
+	var yAxis = d3.svg.axis()
+		      .scale(yScale)
+		      .orient("right");
+	
 
 	var svg = d3.select("body")
 			.append("svg")
@@ -118,5 +123,7 @@ function make_graph(dataset){
 			fill : '#9bbb59'
 			} );
 	
-
+	// Axis‚Ì•\Ž¦
+	svg.append("g")
+		.call(yAxis);
 }

@@ -87,19 +87,39 @@ function make_graph(dataset){
 		.append("rect")	
 		.attr( {
 			x : function(d,i){ return i * (w / dataset.length);   },
-			y : function(d){ return h - d[3]; -10 },
+			y : function(d){ return h - d[3] -15 },
 			width : w / dataset.length - barPadding,
 			height : function(d){ return d[3];  },
-			fill : '#6fbadd'
+			fill : function(d,i){ 	if(i % 10 == 0){
+							return '#9bbb59';
+						} else{
+							return '#6fbadd';
+						}
+					}
 			} );
 
 	svg.selectAll("text")
 		.data(dataset)
 		.enter()
 		.append("text")
-		.text(function(d){ return d[3]; })
+		.text(function(d){ return d[1]; })
 		.attr( {
 			x : function(d,i){ return i * (w / dataset.length); } ,
-			y : h - 10 
+			y : function(d,i){ if(i % 10 == 0){
+						return h;
+					   }
+					} ,
+			fill : '#9bbb59'
+			} );
+
+	svg.selectAll("text")
+		.data(dataset)
+		.enter()
+		.append("text")
+		.text(function(d,i){ if(i%10 == 0){return d[3];} })
+		.attr( {
+				x : function(d,i){return i * (w /dataset.length); },
+				y : function(d,i){return h;},
+				fill : '#9bbb59'
 			} );
 }

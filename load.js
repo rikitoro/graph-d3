@@ -72,7 +72,8 @@ function text2csv(text){
 function make_graph(dataset){
 	var w = 1000;
 	var h = 400;
-	var barPadding = 1; // –\“k–_‚ÌŠÔ‚ÌŠÔŠu
+	var barPadding = 1; // –_‚Æ–_‚ÌŠÔ‚ÌŠÔŠu
+	var axisPadding = 20; // ƒOƒ‰ƒt‚ÆŽ²‚ÌŠÔŠu
 
 	// scale
 	var yScale = d3.scale.linear()
@@ -97,9 +98,9 @@ function make_graph(dataset){
 		.enter()
 		.append("rect")	
 		.attr( {
-			x : function(d,i){ return i * (w / dataset.length);   },
-			y : function(d){ return h - yScale(d[3]) -15 },
-			width : w / dataset.length - barPadding,
+			x : function(d,i){ return i * ( (w-axisPadding) / dataset.length) + axisPadding;   },
+			y : function(d){ return h - yScale(d[3]) - axisPadding; },
+			width : (w-axisPadding) / dataset.length - barPadding,
 			height : function(d){ return yScale(d[3]);  },
 			fill : function(d,i){ 	if(i % 10 == 0){
 							return '#9bbb59';
@@ -125,5 +126,7 @@ function make_graph(dataset){
 	
 	// Axis‚Ì•\Ž¦
 	svg.append("g")
+		.attr("class","axis")
+		.attr("transform", "translate(0,0)")
 		.call(yAxis);
 }

@@ -63,6 +63,8 @@ function text2csv(text){
 	for(var i=0;i<data.length;i++){
 		data[i][3] = parseInt(data[i][3]);
 	}
+	// 最後に変な改行データが来るので除去
+	data = data.slice(0,data.length-1);
 	// 確認
 	console.log("numbered data:",data);
 
@@ -102,25 +104,31 @@ function make_graph(dataset){
 			y : function(d){ return h - yScale(d[3]) - axisPadding; },
 			width : (w-axisPadding) / dataset.length - barPadding,
 			height : function(d){ return yScale(d[3]);  },
-			fill : function(d,i){ 	if(i % 10 == 0){
-							return '#9bbb59';
-						} else{
-							return '#6fbadd';
-						}
+			fill : 	function(d){
+				 	var a = d[1].split(":");
+					if(a[1] == "00"){
+						return '#9bbb59';
+					} else{
+						return '#6fbadd';
 					}
+				}
 			} );
 
 	svg.selectAll("text")
 		.data(dataset)
 		.enter()
 		.append("text")
-		.text(function(d){ return d[1]; })
+		.text(	function(d,i){
+				var a = d[1].split(":");
+				if(a[1] == "00"){
+					return a[0]+":"+a[1];
+				} else {
+					"";
+				}
+			})
 		.attr( {
 			x : function(d,i){ return i * (w / dataset.length); } ,
-			y : function(d,i){ if(i % 10 == 0){
-						return h;
-					   }
-					} ,
+			y : function(d,i){ return h; } ,
 			fill : '#9bbb59'
 			} );
 	

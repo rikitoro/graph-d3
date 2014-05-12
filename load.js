@@ -92,4 +92,14 @@ function make_graph(dataset){
 			height : function(d){ return d[3];  },
 			fill : '#6fbadd'
 			} );
+
+	svg.selectAll("text")
+		.data(dataset)
+		.enter()
+		.append("text")
+		.text(function(d){ return d[3]; })
+		.attr( {
+			x : function(d,i){ return i * (w / dataset.length); } ,
+			y : h - 10 
+			} );
 }

@@ -76,7 +76,7 @@ function make_graph(dataset){
 
 	// scale
 	var yScale = d3.scale.linear()
-			.domain( [0, d3.max( dataset,function( d ){ return d[3]; } ) ] )
+			.domain( [0, 500] )
 			.range([0,h]);
 
 

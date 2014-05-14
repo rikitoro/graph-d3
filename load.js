@@ -1,7 +1,6 @@
 ﻿$(document).ready(function(){
 	$.ajax({
 		url: "http://hirose.sendai-nct.ac.jp/~sue/wattmon/5min.csv",
-		//url: "http://dataforjapan.org/dataset/54f270dc-817d-465a-baa9-3a221ce3b962/resource/5cdf7c23-c19d-44d0-a389-ae09403de745/download/sapporoculturalpropertylocation.csv",
 		type:"GET",
 		chache: false ,
 
@@ -76,7 +75,6 @@ function make_graph(dataset){
 	var barPadding = 1; // 棒と棒の間の間隔
 	var axisPadding = 50; // グラフと軸の間隔
 	var maxNumData = 155;
-	var barWidth = (w - axisPadding) / maxNumData;
 
 	// scale
 	var xScale = d3.scale.linear()
@@ -84,7 +82,7 @@ function make_graph(dataset){
 			.range([margin.left, w - margin.right]);
 	var yScale = d3.scale.linear()
 			.domain( [0, 500] )
-			.range([0,h]);
+			.range([h - margin.bottom, margin.top]);
 
 	// axis
 	var yAxis = d3.svg.axis()
@@ -105,9 +103,9 @@ function make_graph(dataset){
 		.append("rect")	
 		.attr( {
 			x : function(d,i){ return xScale(i); },
-			y : function(d){ return h - yScale(d[3]) - axisPadding; },
+			y : function(d){ return yScale(d[3]); },
 			width : function(d, i) { return xScale(i+1) - xScale(i) - barPadding },
-			height : function(d){ return yScale(d[3]);  },
+			height : function(d){ return yScale(0) - yScale(d[3]);  },
 			fill : function(d,i){ if(i % 12 == 0){
 							return '#9bbb59';
 						} else{
@@ -120,11 +118,11 @@ function make_graph(dataset){
 		.data(dataset)
 		.enter()
 		.append("text")
-		.text(function(d){ return d[1].match(/\d\d:\d\d/)[0]; })
+		.text(function(d){ return d[1];})//.match(/\d\d:\d\d/)[0]; })
 		.attr( {
 			x : function(d,i){ return xScale(i); } ,
 			y : function(d,i){ if(i % 12 == 0){
-						return h;
+						return yScale(-20);
 					   }
 					} ,
 			fill : '#9bbb59'
@@ -133,6 +131,6 @@ function make_graph(dataset){
 	// Axisの表示
 	svg.append("g")
 		.attr("class","axis")
-		.attr("transform", "translate(" + axisPadding + ", " + axisPadding + ")")
+		.attr("transform", "translate(" + xScale(0) + "," + 0 +")")
 		.call(yAxis);
 }

@@ -72,10 +72,16 @@ function text2csv(text){
 function make_graph(dataset){
 	var w = 1000;
 	var h = 400;
+	var margin = {top: 10, bottom: 50, left: 50, right: 20}
 	var barPadding = 1; // 棒と棒の間の間隔
-	var axisPadding = 20; // グラフと軸の間隔
+	var axisPadding = 50; // グラフと軸の間隔
+	var maxNumData = 155;
+	var barWidth = (w - axisPadding) / maxNumData;
 
 	// scale
+	var xScale = d3.scale.linear()
+			.domain([0, maxNumData])
+			.range([margin.left, w - margin.right]);
 	var yScale = d3.scale.linear()
 			.domain( [0, 500] )
 			.range([0,h]);
@@ -83,7 +89,7 @@ function make_graph(dataset){
 	// axis
 	var yAxis = d3.svg.axis()
 		      .scale(yScale)
-		      .orient("right");
+		      .orient("left");
 	
 
 	var svg = d3.select("body")
@@ -98,11 +104,11 @@ function make_graph(dataset){
 		.enter()
 		.append("rect")	
 		.attr( {
-			x : function(d,i){ return i * ( (w-axisPadding) / dataset.length) + axisPadding;   },
+			x : function(d,i){ return xScale(i); },
 			y : function(d){ return h - yScale(d[3]) - axisPadding; },
-			width : (w-axisPadding) / dataset.length - barPadding,
+			width : function(d, i) { return xScale(i+1) - xScale(i) - barPadding },
 			height : function(d){ return yScale(d[3]);  },
-			fill : function(d,i){ 	if(i % 10 == 0){
+			fill : function(d,i){ if(i % 12 == 0){
 							return '#9bbb59';
 						} else{
 							return '#6fbadd';
@@ -114,10 +120,10 @@ function make_graph(dataset){
 		.data(dataset)
 		.enter()
 		.append("text")
-		.text(function(d){ return d[1]; })
+		.text(function(d){ return d[1].match(/\d\d:\d\d/)[0]; })
 		.attr( {
-			x : function(d,i){ return i * (w / dataset.length); } ,
-			y : function(d,i){ if(i % 10 == 0){
+			x : function(d,i){ return xScale(i); } ,
+			y : function(d,i){ if(i % 12 == 0){
 						return h;
 					   }
 					} ,
@@ -127,6 +133,6 @@ function make_graph(dataset){
 	// Axisの表示
 	svg.append("g")
 		.attr("class","axis")
-		.attr("transform", "translate(0,0)")
+		.attr("transform", "translate(" + axisPadding + ", " + axisPadding + ")")
 		.call(yAxis);
 }

@@ -1,4 +1,4 @@
-$(document).ready(function(){
+ï»¿$(document).ready(function(){
 	$.ajax({
 		url: "http://hirose.sendai-nct.ac.jp/~sue/wattmon/5min.csv",
 		//url: "http://dataforjapan.org/dataset/54f270dc-817d-465a-baa9-3a221ce3b962/resource/5cdf7c23-c19d-44d0-a389-ae09403de745/download/sapporoculturalpropertylocation.csv",
@@ -16,26 +16,26 @@ $(document).ready(function(){
 
 function text2csv(text){
 	/*
-	ƒf[ƒ^
-	“ä‹ó”’ y/m/d h:m:s, #n#, value y/m/d.... LFLF
-	‚±‚¤‚¢‚¤•Ï‚É‹ó”’‚ğ¬‚º‚â‚ª‚Á‚½ƒf[ƒ^‚ğ®Œ`‚µ‚Äcsv‚É‚·‚é
+	ãƒ‡ãƒ¼ã‚¿
+	è¬ç©ºç™½ y/m/d h:m:s, #n#, value y/m/d.... LFLF
+	ã“ã†ã„ã†å¤‰ã«ç©ºç™½ã‚’æ··ãœã‚„ãŒã£ãŸãƒ‡ãƒ¼ã‚¿ã‚’æ•´å½¢ã—ã¦csvã«ã™ã‚‹
 	*/
-	//LF•¶š‚ğíœ
+	//LFæ–‡å­—ã‚’å‰Šé™¤
 	var lf = String.fromCharCode(10);
 	text = text.replace(lf,"");
-	// æ“ª‚Ì“ä‹ó”’‚ğíœ‚µ‚Ä‚â‚é
+	// å…ˆé ­ã®è¬ç©ºç™½ã‚’å‰Šé™¤ã—ã¦ã‚„ã‚‹
 	var n = text.search(/\d/);
 	if( n != -1){
 		text = text.slice(n);
 	}
 
-	// Šm”F
+	// ç¢ºèª
 	console.log("remove space:",text);
-	// “ú•t‚Æ‚ÌŠÔ‚ª‹ó”’‚È‚Ì‚ÅA‚»‚±‚ğƒJƒ“ƒ}‚É’u‚«Š·‚¦‚é
-	// #n#‚Ì‘O‚É‚à“ä‹ó”’‚ª‚ ‚é‚Ì‚Åíœ
-	// value‚Ì‘O‚É‚à“ä‹ó”’‚ª‚ ‚é‚Ì‚Åíœ
-	// s‚²‚Æ‚Ì‹æØ‚è‚à‹ó”’‚È‚Ì‚ÅA‚»‚±‚Ü‚»‚Ì‚Ü‚Ü
-	// num ¡Šô‚Â‚ß‚Ì‹ó”’‚©
+	// æ—¥ä»˜ã¨æ™‚åˆ»ã®é–“ãŒç©ºç™½ãªã®ã§ã€ãã“ã‚’ã‚«ãƒ³ãƒã«ç½®ãæ›ãˆã‚‹
+	// #n#ã®å‰ã«ã‚‚è¬ç©ºç™½ãŒã‚ã‚‹ã®ã§å‰Šé™¤
+	// valueã®å‰ã«ã‚‚è¬ç©ºç™½ãŒã‚ã‚‹ã®ã§å‰Šé™¤
+	// è¡Œã”ã¨ã®åŒºåˆ‡ã‚Šã‚‚ç©ºç™½ãªã®ã§ã€ãã“ã¾ãã®ã¾ã¾
+	// num ä»Šå¹¾ã¤ã‚ã®ç©ºç™½ã‹
 	var num = 1;
 	for(var i=0;i<text.length;i++){
 		if(text.charAt(i) == " "){
@@ -47,23 +47,23 @@ function text2csv(text){
 			}
 		}
 	}
-	// Šm”F
+	// ç¢ºèª
 	console.log("replaced text:",text);
-	// s‚²‚Æ‚Ì‹æØ‚è‚ª‹ó”’‚È‚Ì‚Å‹ó”’‚Å”z—ñ‚ğ‹æØ‚é
+	// è¡Œã”ã¨ã®åŒºåˆ‡ã‚ŠãŒç©ºç™½ãªã®ã§ç©ºç™½ã§é…åˆ—ã‚’åŒºåˆ‡ã‚‹
 	data = text.split(" ");
-	// Šm”F
+	// ç¢ºèª
 	console.log("data:" , data);
-	// Šes‚Ìƒf[ƒ^‚Ì‹æØ‚è‚ÍƒJƒ“ƒ}‚È‚Ì‚ÅƒJƒ“ƒ}‚²‚Æ‚É”z—ñ‚ğ‚³‚ç‚É‹æØ‚é
+	// å„è¡Œã®ãƒ‡ãƒ¼ã‚¿ã®åŒºåˆ‡ã‚Šã¯ã‚«ãƒ³ãƒãªã®ã§ã‚«ãƒ³ãƒã”ã¨ã«é…åˆ—ã‚’ã•ã‚‰ã«åŒºåˆ‡ã‚‹
 	for(var i=0;i<data.length;i++){
 		data[i] = data[i].split(",");
 	}
-	// Šm”F
+	// ç¢ºèª
 	console.log("failinged data:",data);
-	// Šeƒf[ƒ^‚ğ”’l‚É•ÏŠ·
+	// å„ãƒ‡ãƒ¼ã‚¿ã‚’æ•°å€¤ã«å¤‰æ›
 	for(var i=0;i<data.length;i++){
 		data[i][3] = parseInt(data[i][3]);
 	}
-	// Šm”F
+	// ç¢ºèª
 	console.log("numbered data:",data);
 
 	return data;
@@ -72,8 +72,8 @@ function text2csv(text){
 function make_graph(dataset){
 	var w = 1000;
 	var h = 400;
-	var barPadding = 1; // –_‚Æ–_‚ÌŠÔ‚ÌŠÔŠu
-	var axisPadding = 20; // ƒOƒ‰ƒt‚Æ²‚ÌŠÔŠu
+	var barPadding = 1; // æ£’ã¨æ£’ã®é–“ã®é–“éš”
+	var axisPadding = 20; // ã‚°ãƒ©ãƒ•ã¨è»¸ã®é–“éš”
 
 	// scale
 	var yScale = d3.scale.linear()
@@ -124,7 +124,7 @@ function make_graph(dataset){
 			fill : '#9bbb59'
 			} );
 	
-	// Axis‚Ì•\¦
+	// Axisã®è¡¨ç¤º
 	svg.append("g")
 		.attr("class","axis")
 		.attr("transform", "translate(0,0)")

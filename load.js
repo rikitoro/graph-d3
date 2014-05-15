@@ -8,6 +8,7 @@
 			content = $(res.responseText).text();
 			var datacsv = text2csv(content);
 			var dataset = csv2dataset(datacsv);
+			console.log(dataset);
 			make_graph(dataset);
 		}
 	});
@@ -70,6 +71,9 @@ function make_graph(dataset){
 	var barPadding = 1; // 棒と棒の間の間隔
 	var maxNumData = 155;
 	var color = {normal: "DarkSeaGreen" , highlight: 'DarkSlateGray'}
+	function barColor(no) {
+		return no % 12 == 0 ? color.highlight : color.normal;
+	}
 
 	// scale
 	var xScale = d3.scale.linear()
@@ -92,13 +96,26 @@ function make_graph(dataset){
 		.data(dataset)
 		.enter()
 		.append("rect")
+		.on("mouseover", function(d) {
+			d3.select(this)
+				.attr({ 
+					fill: "red"
+				})
+		})
+		.on("mouseout", function(d) {
+			d3.select(this)
+				.attr({ 
+					fill: function(d){ return barColor(d.no); }	
+				})
+		})
 		.attr( {
 			x : function(d){ return xScale(d.no); },
 			y : function(d){ return yScale(d.watt); },
 			width : function(d) { return xScale(d.no+1) - xScale(d.no) - barPadding },
 			height : function(d){ return yScale(0) - yScale(d.watt);  },
-			fill : function(d){ return d.no % 12 == 0 ? color.highlight : color.normal}
-		} );
+			fill : function(d){ return barColor(d.no); }
+		});
+
 
 	svg.selectAll("bar_text")
 		.data(dataset)
@@ -109,7 +126,7 @@ function make_graph(dataset){
 			x : function(d){ return xScale(d.no); } ,
 			y : yScale(-20),
 			fill : color.highlight
-			} );
+		} );
 
 	// line_level
 	var line_level = [0, 100, 200, 300, 400, 500];
@@ -123,8 +140,8 @@ function make_graph(dataset){
 			y1: function(d) { return yScale(d) },
 			x2: xScale(maxNumData),
 			y2: function(d) { return yScale(d) },
-			strokeWidth: 2,
-			stroke: "black"
+			'stroke-width': 1,
+			'stroke': "black"
 		});
 
 	svg.selectAll("line_level_text")

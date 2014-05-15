@@ -6,12 +6,18 @@
 
 		success:function(res){
 			content = $(res.responseText).text();
-			console.log("content:",content);
-			var dataset = text2csv(content);
+			var datacsv = text2csv(content);
+			var dataset = csv2dataset(datacsv);
 			make_graph(dataset);
 		}
 	});
 });
+
+function csv2dataset(csv) {
+	return _.map(csv, function(d, i) {
+		return {no: i, time: d[1], watt: d[3]}
+	});
+}
 
 function text2csv(text){
 	/*
@@ -28,8 +34,6 @@ function text2csv(text){
 		text = text.slice(n);
 	}
 
-	// 確認
-	console.log("remove space:",text);
 	// 日付と時刻の間が空白なので、そこをカンマに置き換える
 	// #n#の前にも謎空白があるので削除
 	// valueの前にも謎空白があるので削除
@@ -87,22 +91,22 @@ function make_graph(dataset){
 	svg.selectAll("bar")
 		.data(dataset)
 		.enter()
-		.append("rect")	
+		.append("rect")
 		.attr( {
-			x : function(d,i){ return xScale(i); },
-			y : function(d){ return yScale(d[3]); },
-			width : function(d, i) { return xScale(i+1) - xScale(i) - barPadding },
-			height : function(d){ return yScale(0) - yScale(d[3]);  },
-			fill : function(d,i){ return i % 12 == 0 ? color.highlight : color.normal}
+			x : function(d){ return xScale(d.no); },
+			y : function(d){ return yScale(d.watt); },
+			width : function(d) { return xScale(d.no+1) - xScale(d.no) - barPadding },
+			height : function(d){ return yScale(0) - yScale(d.watt);  },
+			fill : function(d){ return d.no % 12 == 0 ? color.highlight : color.normal}
 		} );
 
 	svg.selectAll("bar_text")
 		.data(dataset)
 		.enter()
 		.append("text")
-		.text(function(d, i){ return i % 12 == 0 ? d[1].match(/\d\d:\d\d/)[0] : ""; })
+		.text(function(d){ return d.no % 12 == 0 ? d.time.match(/\d\d:\d\d/)[0] : ""; })
 		.attr( {
-			x : function(d,i){ return xScale(i); } ,
+			x : function(d){ return xScale(d.no); } ,
 			y : yScale(-20),
 			fill : color.highlight
 			} );
@@ -127,7 +131,7 @@ function make_graph(dataset){
 		.data(line_level)
 		.enter()
 		.append("text")
-		.text( function(d) { return d + "[kW]";} )
+		.text( function(d) { return d + " [kW]";} )
 		.attr( {
 			x: xScale(-10),
 			y: function(d) { return yScale(d+5) },

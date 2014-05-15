@@ -46,24 +46,16 @@ function text2csv(text){
 			}
 		}
 	}
-	// 確認
-	console.log("replaced text:",text);
 	// 行ごとの区切りが空白なので空白で配列を区切る
 	data = text.split(" ");
-	// 確認
-	console.log("data:" , data);
 	// 各行のデータの区切りはカンマなのでカンマごとに配列をさらに区切る
 	for(var i=0;i<data.length;i++){
 		data[i] = data[i].split(",");
 	}
-	// 確認
-	console.log("failinged data:",data);
 	// 各データを数値に変換
 	for(var i=0;i<data.length;i++){
 		data[i][3] = parseInt(data[i][3]);
 	}
-	// 確認
-	console.log("numbered data:",data);
 
 	return data;
 }
@@ -73,9 +65,9 @@ function make_graph(dataset){
 	var h = 400;
 	var margin = {top: 30, bottom: 50, left: 100, right: 20}
 	var barPadding = 1; // 棒と棒の間の間隔
-	var axisPadding = 50; // グラフと軸の間隔
 	var maxNumData = 155;
 	var color = {normal: "DarkSeaGreen" , highlight: 'DarkSlateGray'}
+
 	// scale
 	var xScale = d3.scale.linear()
 			.domain([0, maxNumData])
@@ -83,18 +75,14 @@ function make_graph(dataset){
 	var yScale = d3.scale.linear()
 			.domain( [0, 500] )
 			.range([h - margin.bottom, margin.top]);
-
-	// axis
-	var yAxis = d3.svg.axis()
-		      .scale(yScale)
-		      .orient("left");
 	
-
     // svg
 	var svg = d3.select("body")
 			.append("svg")
-			.attr("height",h)
-			.attr("width",w);
+			.attr( {
+				height: h,
+				width: w
+			});
 
 	// bar
 	svg.selectAll("bar")

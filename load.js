@@ -71,11 +71,11 @@ function text2csv(text){
 function make_graph(dataset){
 	var w = 1000;
 	var h = 400;
-	var margin = {top: 10, bottom: 50, left: 50, right: 20}
+	var margin = {top: 30, bottom: 50, left: 100, right: 20}
 	var barPadding = 1; // 棒と棒の間の間隔
 	var axisPadding = 50; // グラフと軸の間隔
 	var maxNumData = 155;
-
+	var color = {normal: "DarkSeaGreen" , highlight: 'DarkSlateGray'}
 	// scale
 	var xScale = d3.scale.linear()
 			.domain([0, maxNumData])
@@ -90,14 +90,14 @@ function make_graph(dataset){
 		      .orient("left");
 	
 
+    // svg
 	var svg = d3.select("body")
 			.append("svg")
 			.attr("height",h)
 			.attr("width",w);
 
-	console.log("svg:",svg);
-
-	svg.selectAll("rect")
+	// bar
+	svg.selectAll("bar")
 		.data(dataset)
 		.enter()
 		.append("rect")	
@@ -107,30 +107,49 @@ function make_graph(dataset){
 			width : function(d, i) { return xScale(i+1) - xScale(i) - barPadding },
 			height : function(d){ return yScale(0) - yScale(d[3]);  },
 			fill : function(d,i){ if(i % 12 == 0){
-							return '#9bbb59';
+							return color.highlight;
 						} else{
-							return '#6fbadd';
+							return color.normal;
 						}
 					}
 			} );
 
-	svg.selectAll("text")
+	svg.selectAll("bar_text")
 		.data(dataset)
 		.enter()
 		.append("text")
-		.text(function(d){ return d[1];})//.match(/\d\d:\d\d/)[0]; })
+		.text(function(d, i){ return i % 12 == 0 ? d[1].match(/\d\d:\d\d/)[0] : ""; })
 		.attr( {
 			x : function(d,i){ return xScale(i); } ,
-			y : function(d,i){ if(i % 12 == 0){
-						return yScale(-20);
-					   }
-					} ,
-			fill : '#9bbb59'
+			y : yScale(-20),
+			fill : color.highlight
 			} );
-	
-	// Axisの表示
-	svg.append("g")
-		.attr("class","axis")
-		.attr("transform", "translate(" + xScale(0) + "," + 0 +")")
-		.call(yAxis);
+
+	// line_level
+	var line_level = [0, 100, 200, 300, 400, 500];
+
+	svg.selectAll("line_level")
+		.data(line_level)
+		.enter()
+		.append("line")
+		.attr( {
+			x1: xScale(-10),
+			y1: function(d) { return yScale(d) },
+			x2: xScale(w),
+			y2: function(d) { return yScale(d) },
+			strokeWidth: 2,
+			stroke: "black"
+		});
+
+	svg.selectAll("line_level_text")
+		.data(line_level)
+		.enter()
+		.append("text")
+		.text( function(d) { return d + "[kW]";} )
+		.attr( {
+			x: xScale(-10),
+			y: function(d) { return yScale(d+5) },
+			fill: "black"
+		} );
+
 }

@@ -61,9 +61,8 @@ function text2csv(text){
 }
 
 function make_graph(dataset){
-	var w = 1000;
-	var h = 400;
-	var margin = {top: 30, bottom: 50, left: 100, right: 20}
+	var pane = { width: 1000, height: 400};
+	var margin = {top: 30, bottom: 30, left: 80, right: 20}
 	var barPadding = 1; // 棒と棒の間の間隔
 	var maxNumData = 155;
 	var color = {normal: "DarkSeaGreen" , highlight: 'DarkSlateGray'}
@@ -71,17 +70,17 @@ function make_graph(dataset){
 	// scale
 	var xScale = d3.scale.linear()
 			.domain([0, maxNumData])
-			.range([margin.left, w - margin.right]);
+			.range([margin.left, pane.width - margin.right]);
 	var yScale = d3.scale.linear()
 			.domain( [0, 500] )
-			.range([h - margin.bottom, margin.top]);
+			.range([pane.height - margin.bottom, margin.top]);
 	
     // svg
 	var svg = d3.select("body")
 			.append("svg")
 			.attr( {
-				height: h,
-				width: w
+				height: pane.height,
+				width: pane.width
 			});
 
 	// bar
@@ -94,13 +93,8 @@ function make_graph(dataset){
 			y : function(d){ return yScale(d[3]); },
 			width : function(d, i) { return xScale(i+1) - xScale(i) - barPadding },
 			height : function(d){ return yScale(0) - yScale(d[3]);  },
-			fill : function(d,i){ if(i % 12 == 0){
-							return color.highlight;
-						} else{
-							return color.normal;
-						}
-					}
-			} );
+			fill : function(d,i){ return i % 12 == 0 ? color.highlight : color.normal}
+		} );
 
 	svg.selectAll("bar_text")
 		.data(dataset)
@@ -123,7 +117,7 @@ function make_graph(dataset){
 		.attr( {
 			x1: xScale(-10),
 			y1: function(d) { return yScale(d) },
-			x2: xScale(w),
+			x2: xScale(maxNumData),
 			y2: function(d) { return yScale(d) },
 			strokeWidth: 2,
 			stroke: "black"

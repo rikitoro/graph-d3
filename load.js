@@ -8,6 +8,7 @@
 			content = $(res.responseText).text();
 			var datacsv = text2csv(content);
 			var dataset = csv2dataset(datacsv);
+			console.log(datacsv);
 			console.log(dataset);
 			make_graph(dataset);
 		}

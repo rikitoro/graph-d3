@@ -93,7 +93,7 @@ function make_graph(dataset){
 			});
 
 	// tooltip
-	var tooltip =d3.select("body")
+	var tooltip = d3.select("body")
 			.append("div")
 			.style("position", "absolute")
 			.style("z-index","10")
@@ -106,8 +106,10 @@ function make_graph(dataset){
 		.enter()
 		.append("rect")
 		.on("mouseover", function(d) {
-			tooltip.style("visibility","visible");
-			tooltip.text(d.watt + "kW");
+			tooltip.style("visibility","visible")
+				.style("top", yScale(d.watt+80) + "px")
+				.style("left", xScale(d.no-10) + "px")
+				.html( "<dl><dd>" + d.time + "</dd><dd>" + d.watt + " [kW]</dd></dl>");
 			d3.select(this)
 				.attr({ 
 					fill: "red"
@@ -122,15 +124,16 @@ function make_graph(dataset){
 		})
 		.attr( {
 			x : function(d){ return xScale(d.no); },
-			y : function(d){ return yScale(d.watt); },
+			y : yScale(0),
 			width : function(d) { return xScale(d.no+1) - xScale(d.no) - barPadding },
 			height : 0,
 			fill : function(d){ return barColor(d.no); }
 		})
 		.transition()
-		.duration(1000)
-		.delay( function(d,i){ return i * 10; })
+		.duration(500)
+		.delay( function(d,i){ return i * 5; })
 		.attr( {
+			y : function(d){ return yScale(d.watt)},
 			height : function(d){ return yScale(0) - yScale(d.watt);  }
 		});
 

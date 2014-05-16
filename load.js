@@ -5,11 +5,8 @@
 		chache: false ,
 
 		success:function(res){
-			content = $(res.responseText).text();
-			var datacsv = text2csv(content);
-			var dataset = csv2dataset(datacsv);
-			console.log(datacsv);
-			console.log(dataset);
+			var content = $(res.responseText).text();
+			var dataset = text2dataset(content);
 			make_graph(dataset);
 		}
 	});
@@ -21,49 +18,30 @@ function csv2dataset(csv) {
 	});
 }
 
-function text2csv(text){
+function text2dataset(text){
 	/*
 	データ
 	謎空白 y/m/d h:m:s, #n#, value y/m/d.... LFLF
-	こういう変に空白を混ぜやがったデータを整形してcsvにする
+	こういう変に空白を混ぜやがったデータを整形してdatasetにする
 	*/
-	//LF文字を削除
+
+	// 先頭末尾のスペースとLF文字を削除
 	var lf = String.fromCharCode(10);
-	text = text.replace(lf,"");
-	// 先頭の謎空白を削除してやる
-	var n = text.search(/\d/);
-	if( n != -1){
-		text = text.slice(n);
-	}
-
-	// 日付と時刻の間が空白なので、そこをカンマに置き換える
-	// #n#の前にも謎空白があるので削除
-	// valueの前にも謎空白があるので削除
-	// 行ごとの区切りも空白なので、そこまそのまま
-	// num 今幾つめの空白か
-	var num = 1;
-	for(var i=0;i<text.length;i++){
-		if(text.charAt(i) == " "){
-			if(num != 4){
-				text = text.slice(0,i-1) + "," + text.slice(i+1);
-				num += 1;
-			} else{
-				num = 1;
-			}
-		}
-	}
-	// 行ごとの区切りが空白なので空白で配列を区切る
-	data = text.split(" ");
-	// 各行のデータの区切りはカンマなのでカンマごとに配列をさらに区切る
-	for(var i=0;i<data.length;i++){
-		data[i] = data[i].split(",");
-	}
-	// 各データを数値に変換
-	for(var i=0;i<data.length;i++){
-		data[i][3] = parseInt(data[i][3]);
-	}
-
-	return data;
+	var trimedText = text.replace(/^(\s|lf)+|(\s|lf)+$/g, "");
+	// カンマ,スペースで分割　["y/m/d", "h:m:s", "#n#", "value", ...]
+	textList = trimedText.split(/\s*\,\s*|\s/);
+	// 時刻の部分だけ取り出す　["h:m:s", "h:m:s", ...]
+	timeList = _.filter(textList, function(d, i) { return i % 4 == 1});
+	// watt値のところだけ取り出す　[value0, value1, ...]
+	wattList = _.map(_.filter(textList, function(d, i) { return i % 4 == 3}), 
+		function(d) { return parseInt(d)});
+	// 時刻とwattのリストをZip [["h:m:s", value0], ["h:m:s", value1], ...]
+	timeWattList = _.zip(timeList, wattList);
+	// make_graphが読める形式に変換　[{no: 0, time: "h:m:s", watt: value0}, ...]
+	dataset = _.map(timeWattList, function(d, i) { 
+		return {no: i, time: d[0], watt: _.isNumber(d[1]) ? d[1] : 0 };
+	});
+	return dataset;
 }
 
 function make_graph(dataset){
@@ -130,8 +108,8 @@ function make_graph(dataset){
 			fill : function(d){ return barColor(d.no); }
 		})
 		.transition()
-		.duration(500)
-		.delay( function(d,i){ return i * 5; })
+		.duration(300)
+		.delay( function(d,i){ return i * 3; })
 		.attr( {
 			y : function(d){ return yScale(d.watt)},
 			height : function(d){ return yScale(0) - yScale(d.watt);  }

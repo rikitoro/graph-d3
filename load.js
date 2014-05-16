@@ -123,8 +123,14 @@ function make_graph(dataset){
 			x : function(d){ return xScale(d.no); },
 			y : function(d){ return yScale(d.watt); },
 			width : function(d) { return xScale(d.no+1) - xScale(d.no) - barPadding },
-			height : function(d){ return yScale(0) - yScale(d.watt);  },
+			height : 0,
 			fill : function(d){ return barColor(d.no); }
+		})
+		.transition()
+		.duration(1000)
+		.delay( function(d,i){ return i * 10; })
+		.attr( {
+			height : function(d){ return yScale(0) - yScale(d.watt);  }
 		});
 
 

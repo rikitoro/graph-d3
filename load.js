@@ -91,18 +91,29 @@ function make_graph(dataset){
 				width: pane.width
 			});
 
+	// tooltip
+	var tooltip =d3.select("body")
+			.append("div")
+			.style("position", "absolute")
+			.style("z-index","10")
+			.style("visibility" , "hidden")
+			.text(" ");
+
 	// bar
 	svg.selectAll("bar")
 		.data(dataset)
 		.enter()
 		.append("rect")
 		.on("mouseover", function(d) {
+			tooltip.style("visibility","visible");
+			tooltip.text(d.watt + "kW");
 			d3.select(this)
 				.attr({ 
 					fill: "red"
 				})
 		})
 		.on("mouseout", function(d) {
+			tooltip.style("visibility","hidden");
 			d3.select(this)
 				.attr({ 
 					fill: function(d){ return barColor(d.no); }	

@@ -1,0 +1,8 @@
+.tooltip {
+ 	border: 1px solid black;
+ 	background-color: white;
+ 	padding: 5px 8px 4px 8px;
+ 	border-radius: 4px;
+ 	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}

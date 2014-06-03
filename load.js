@@ -73,6 +73,7 @@ function make_graph(dataset){
 	// tooltip
 	var tooltip = d3.select("body")
 			.append("div")
+			.attr("class", "tooltip")
 			.style("position", "absolute")
 			.style("z-index","10")
 			.style("visibility" , "hidden")
@@ -86,8 +87,8 @@ function make_graph(dataset){
 		.on("mouseover", function(d) {
 			tooltip.style("visibility","visible")
 				.style("top", yScale(d.watt+80) + "px")
-				.style("left", xScale(d.no-10) + "px")
-				.html( "<dl><dd>" + d.time + "</dd><dd>" + d.watt + " [kW]</dd></dl>");
+				.style("left", xScale(d.no) + "px")
+				.html("<table><tr><td>" + d.time + "</td></tr><tr><td>" + d.watt + " [kW]</td></tr>");
 			d3.select(this)
 				.attr({ 
 					fill: "red"

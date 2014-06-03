@@ -1,21 +1,22 @@
 ﻿$(document).ready(function(){
 	var url = "http://hirose.sendai-nct.ac.jp/~sue/wattmon/5min.csv";
+	var dataTranslator = text2dataset;
 	var drawer = drawWattGraph;
-//	constructWattGraph(url, drawer);
-//});
+	constructWattGraph(url, dataTranslator, drawer);
+});
 
-//function constructWattGraph(url, drawer) {
+function constructWattGraph(url, dataTranslator, drawer) {
 	$.ajax({
 		url: url,
 		type:"GET",
 		chache: false,
 		success: function(res){
 			var content = $(res.responseText).text();
-			var dataset = csv2dataset(content);
+			var dataset = dataTranslator(content);
 			drawer(dataset);
 		}
 	});
-});
+};
 
 function csv2dataset(csv) {
 	return _.map(csv, function(d, i) {
